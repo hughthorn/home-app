@@ -22,7 +22,13 @@ app.use('/people', peopleRouter);
     Listen for SIGINT signal - issued by closing the server with ctrl+c
     This releases the database connections prior to app being stopped
 */
-process.on('SIGINT', () => {
+// process.on('SIGINT', () => {
+//     db.end().then(() => {
+//         console.log('Database pool closed');
+//     });
+// });
+
+process.on('unhandledRejection', () => {
     db.end().then(() => {
         console.log('Database pool closed');
     });
