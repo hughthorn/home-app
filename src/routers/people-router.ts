@@ -1,6 +1,5 @@
 import express from 'express';
 import * as peopleService from '../services/people-service';
-import { Person } from '../models/Person';
 
 export const peopleRouter = express.Router();
 
@@ -9,9 +8,10 @@ export const peopleRouter = express.Router();
     Retrieves an array of people from database
 */
 peopleRouter.get('', (request, response, next) => {
-    const people: Person[] = peopleService.getAllPeople();
-    response.json(people);
-    next();
+    peopleService.getAllPeople().then(people => {
+        response.json(people);
+        next();
+    });
 });
 
 /*

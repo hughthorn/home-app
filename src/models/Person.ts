@@ -8,7 +8,7 @@ export class Person {
      * Static function for creating a Person instance from the structure the
      * database gives us
      */
-    static from(obj: PersonTable) {
+    static from(obj: PersonRow): Person {
         const person = new Person(
             obj.id, obj.first_name, obj.last_name, new Date(obj.birthdate)
         );
@@ -28,7 +28,7 @@ export class Person {
     // }
 }
 
-interface PersonTable {
+export interface PersonRow {
     id: number;
     first_name: string;
     last_name: string;
