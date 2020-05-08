@@ -6,13 +6,14 @@ export function getAllPeople(): Promise<Person[]> {
     return peopleDao.getAllPeople();
 }
 
-export function getPersonById(id: number): Person {
+export function getPersonById(id: number): Promise<Person> {
     // Apply internal business logic
     return peopleDao.getPersonById(id);
 }
 
-export function savePerson(person: any): Person {
+export function savePerson(person: any): Promise<Person> {
 
+    console.log(person);
     // Data from the user cannot be trusted
     const newPerson = new Person(
         undefined, person.firstName,
@@ -27,5 +28,27 @@ export function savePerson(person: any): Person {
         return peopleDao.savePerson(newPerson);
     } else {
         // TODO: We should fail here, probably issue some kind of 400
+        console.warn('Person invalid');
+        return new Promise((resolve, reject) => reject(422));
     }
+}
+
+
+export function patchPerson(input: any): Promise<Person> {
+
+    // We don't want to create Date(undefined) so check if input.birthdate
+    // is defined, otherwise just pass undefined along
+    const birthdate = input.birthdate && new Date(input.birthdate);
+
+    const person = new Person(
+        input.id, input.firstName,
+        input.lastName, birthdate
+    );
+
+    if (!person.id) {
+        throw new Error('400');
+    }
+
+    return peopleDao.patchPerson(person);
+
 }

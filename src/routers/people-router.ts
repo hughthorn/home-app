@@ -11,6 +11,9 @@ peopleRouter.get('', (request, response, next) => {
     peopleService.getAllPeople().then(people => {
         response.json(people);
         next();
+    }).catch(err => {
+        console.log(err);
+        response.sendStatus(500);
     });
 });
 
@@ -21,13 +24,18 @@ peopleRouter.get('', (request, response, next) => {
 */
 peopleRouter.get('/:id', (request, response, next) => {
     const id = +request.params.id;
-    const person = peopleService.getPersonById(id);
-    if (!person) {
-        response.sendStatus(404);
-    } else {
-        response.json(person);
-    }
-    next();
+    peopleService.getPersonById(id).then(person => {
+        if (!person) {
+            response.sendStatus(404);
+        } else {
+            response.json(person);
+        }
+        next();
+    }).catch(err => {
+        console.log(err);
+        response.sendStatus(500);
+        next();
+    })
 });
 
 /*
@@ -37,8 +45,32 @@ peopleRouter.get('/:id', (request, response, next) => {
 */
 peopleRouter.post('', (request, response, next) => {
     const person = request.body;
-    const createdPerson = peopleService.savePerson(person);
-    response.status(201);
-    response.json(createdPerson);
-    next();
+    peopleService.savePerson(person)
+        .then(newPerson => {
+            response.status(201);
+            response.json(newPerson);
+            next();
+        }).catch(err => {
+            console.log(err);
+            response.sendStatus(500);
+            next();
+        });
+});
+
+/* PATCH is an HTTP method that serves as partial replacement */
+peopleRouter.patch('', (request, response, next) => {
+    const person = request.body;
+    peopleService.patchPerson(person)
+        .then(updatedPerson => {
+            if(updatedPerson) {
+                response.json(updatedPerson);
+            } else {
+                response.sendStatus(404);
+            }
+        }).catch(err => {
+            console.log(err);
+            response.sendStatus(500);
+        }).finally(() => {
+            next();
+        })
 });
