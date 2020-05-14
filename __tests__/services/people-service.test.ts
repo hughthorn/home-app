@@ -140,6 +140,49 @@ describe('savePerson', () => {
     });
 });
 
+
 describe('patchPerson', () => {
-    
+    /* Testing behavior of patchPerson */
+    /*
+        1. When a valid patch with an id property is provied, patch succeeds
+            returning a truthy object.
+        2. When a patch with no id property is provided, an error should be thrown.
+    */
+
+    test('successful patch', async () => {
+        expect.assertions(1);
+
+        mockPeopleDao.patchPerson
+            .mockImplementation(() => ({}));
+
+        const payload = {
+            id: 1,
+            firstName: 'Abby',
+            lastName: 'Adams',
+            birthdate: '2020-01-01'
+        };
+
+        const result = await peopleService.patchPerson(payload);
+        expect(result).toBeTruthy();
+    });
+
+    test('patch fails when no valid id is provided', async () => {
+        expect.assertions(1);
+
+        mockPeopleDao.patchPerson
+            .mockImplementation(() => ({}));
+
+        const payload = {
+            firstName: 'Abby',
+            lastName: 'Adams',
+            birthdate: '2020-01-01'
+        };
+
+        try {
+            await peopleService.patchPerson(payload);
+            fail();
+        } catch(err) {
+            expect(err).toBeTruthy();
+        }
+    });
 });
