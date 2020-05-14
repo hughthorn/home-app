@@ -18,7 +18,6 @@ export function getPetsByPersonId(id: number): Promise<Pet[]> {
 
 export function savePerson(person: any): Promise<Person> {
 
-    console.log(person);
     // Data from the user cannot be trusted
     const newPerson = new Person(
         undefined, person.firstName,
@@ -33,7 +32,6 @@ export function savePerson(person: any): Promise<Person> {
         return peopleDao.savePerson(newPerson);
     } else {
         // TODO: We should fail here, probably issue some kind of 400
-        console.warn('Person invalid');
         return new Promise((resolve, reject) => reject(422));
     }
 }
