@@ -10,10 +10,10 @@ export const peopleRouter = express.Router();
 */
 peopleRouter.get('', (request, response, next) => {
     peopleService.getAllPeople().then(people => {
+        response.set('content-type', 'application/json');
         response.json(people);
         next();
     }).catch(err => {
-        console.log(err);
         response.sendStatus(500);
     });
 });
@@ -33,7 +33,6 @@ peopleRouter.get('/:id', (request, response, next) => {
         }
         next();
     }).catch(err => {
-        console.log(err);
         response.sendStatus(500);
         next();
     })
@@ -78,7 +77,6 @@ peopleRouter.post('', (request, response, next) => {
             response.json(newPerson);
             next();
         }).catch(err => {
-            console.log(err);
             response.sendStatus(500);
             next();
         });
@@ -95,7 +93,6 @@ peopleRouter.patch('', (request, response, next) => {
                 response.sendStatus(404);
             }
         }).catch(err => {
-            console.log(err);
             response.sendStatus(500);
         }).finally(() => {
             next();

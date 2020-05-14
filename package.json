@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/app.ts",
-    "test": "jest --verbose"
+    "test": "jest --verbose --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -19,11 +19,13 @@
     "@types/jest": "^25.2.2",
     "@types/node": "^13.13.4",
     "@types/pg": "^7.14.3",
+    "@types/supertest": "^2.0.9",
     "jest": "^26.0.1",
     "nodemon": "^2.0.3",
     "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "supertest": "^4.0.2"
   }
 }
