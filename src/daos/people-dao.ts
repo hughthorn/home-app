@@ -1,6 +1,6 @@
 import { db } from '../daos/db';
 import { Person, PersonRow } from '../models/Person';
-
+import { Pet } from '../models/Pet';
 /**
  * If we are using a one-off query for, we can just use db.query - it will have a connection
  * issue the query without having to pull it from the pool.
@@ -38,6 +38,37 @@ export function getPersonById(id: number): Promise<Person> {
         .then(result => result.rows.map(row => Person.from(row))[0]);
 }
 
+/* Async function - A function that is naturally asynchronous.  The return value of an async
+function MUST be a promise.  If a non-promise value is returned, it will implicitly be wrapped
+in a promise. Async functions are the only places where the 'await' keyword may be used. The
+await keyword is a keyword used to call async functions which implicitly unwraps the promise
+and pauses execution in the current context until the asynchronous function has resolved. */
+export async function getPetsByPersonId(personId: number): Promise<Pet[]> {
+    const userExists: boolean = await personExists(personId);
+    if (!userExists) {
+        return undefined;
+    }
+
+    const sql = `SELECT pets.* FROM pet_owners \
+LEFT JOIN pets ON pet_owners.pets_id = pets.id \
+WHERE people_id = $1`;
+
+    // await will pause execution, waiting for the promise to resolve, then evaluate to 
+    // value the promise resolves to
+    const result = await db.query<Pet>(sql, [personId]);
+    return result.rows;
+
+}
+
+/*
+    Function to check if a user exists with a given ID
+*/
+export async function personExists(personId: number): Promise<boolean> {
+    const sql = `SELECT EXISTS(SELECT id FROM people WHERE id = $1);`;
+    const result = await db.query<Exists>(sql, [personId]);
+    return result.rows[0].exists;
+}
+
 export function savePerson(person: Person): Promise<Person> {
     const sql = `INSERT INTO people (first_name, last_name, birthdate) \
 VALUES ($1, $2, $3) RETURNING *`;
@@ -67,4 +98,8 @@ WHERE id = $4 RETURNING *`;
 
     return db.query<PersonRow>(sql, params)
         .then(result => result.rows.map(row => Person.from(row))[0]);
+}
+
+interface Exists {
+    exists: boolean;
 }

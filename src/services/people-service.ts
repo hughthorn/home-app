@@ -1,5 +1,6 @@
 import { Person } from '../models/Person';
 import * as peopleDao from '../daos/people-dao';
+import { Pet } from '../models/Pet';
 
 export function getAllPeople(): Promise<Person[]> {
     // Apply internal business logic
@@ -9,6 +10,10 @@ export function getAllPeople(): Promise<Person[]> {
 export function getPersonById(id: number): Promise<Person> {
     // Apply internal business logic
     return peopleDao.getPersonById(id);
+}
+
+export function getPetsByPersonId(id: number): Promise<Pet[]> {
+    return peopleDao.getPetsByPersonId(id);
 }
 
 export function savePerson(person: any): Promise<Person> {
@@ -50,5 +55,4 @@ export function patchPerson(input: any): Promise<Person> {
     }
 
     return peopleDao.patchPerson(person);
-
 }

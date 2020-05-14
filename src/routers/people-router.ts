@@ -1,5 +1,6 @@
 import express from 'express';
 import * as peopleService from '../services/people-service';
+import { Pet } from '../models/Pet';
 
 export const peopleRouter = express.Router();
 
@@ -39,6 +40,32 @@ peopleRouter.get('/:id', (request, response, next) => {
 });
 
 /*
+* GET /people/{id}/pets - Array of pets owned by that user
+* or 404 if the user does not exist
+*/
+peopleRouter.get('/:id/pets', async (request, response, next) => {
+    const id: number = parseInt(request.params.id);
+
+    let pets: Pet[];
+
+    try {
+        pets = await peopleService.getPetsByPersonId(id);
+    } catch (err) {
+        response.sendStatus(500);
+        console.log(err);
+        return;
+    }
+
+    // Dao returns undefined for non-existent person
+    if (!pets) {
+        response.sendStatus(404);
+    } else {
+        response.json(pets);
+    }
+    next();
+});
+
+/*
     POST http://localhost:3000/people
     Creates a new person and saves them to the database.
     Returns the inserted data as JSON with status 201.
@@ -62,7 +89,7 @@ peopleRouter.patch('', (request, response, next) => {
     const person = request.body;
     peopleService.patchPerson(person)
         .then(updatedPerson => {
-            if(updatedPerson) {
+            if (updatedPerson) {
                 response.json(updatedPerson);
             } else {
                 response.sendStatus(404);
