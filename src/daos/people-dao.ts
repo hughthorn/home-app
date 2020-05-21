@@ -23,6 +23,9 @@ export function getAllPeople(): Promise<Person[]> {
         // 5. Convert row data format to Person objects
         const people: Person[] = rows.map(row => Person.from(row));
         return people;
+    }).catch(err => {
+        console.log(err);
+        return undefined;
     });
 }
 
