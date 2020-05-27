@@ -18,6 +18,9 @@ peopleRouter.get('', (request, response, next) => {
     });
 });
 
+peopleRouter.get('/hello', (request, response, next) => {
+    response.json({message: "Hello!"})
+})
 /*
     http://localhost:3000/people/1
     Retrieves a single person from the database by id
