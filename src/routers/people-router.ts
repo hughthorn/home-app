@@ -17,7 +17,7 @@ peopleRouter.get('', (request, response, next) => {
         response.sendStatus(500);
     });
 });
-
+// hello
 peopleRouter.get('/hello', (request, response, next) => {
     response.json({message: "Hello!"})
 })
